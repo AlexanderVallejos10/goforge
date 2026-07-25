@@ -127,6 +127,36 @@ func main() {
 			os.Args[2],
 		)
 
+	case "branch":
+
+		if len(os.Args) >= 3 {
+
+			comandos.EjecutarBranch(
+				os.Args[2],
+			)
+
+		} else {
+
+			comandos.EjecutarBranch(
+				"",
+			)
+		}
+
+	case "checkout":
+
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge checkout rama",
+			)
+
+			return
+		}
+
+		comandos.EjecutarCheckout(
+			os.Args[2],
+		)
+
 	case "status":
 
 		comandos.EjecutarEstado()

@@ -3,6 +3,7 @@ package comandos
 import (
 	"fmt"
 
+	"github.com/AlexanderVallejos10/goforge/internal/cabeza"
 	"github.com/AlexanderVallejos10/goforge/internal/commits"
 	"github.com/AlexanderVallejos10/goforge/internal/indice"
 	"github.com/AlexanderVallejos10/goforge/internal/objetos"
@@ -13,6 +14,29 @@ func EjecutarCommit(
 	mensaje string,
 ) {
 
+	if mensaje == "" {
+
+		fmt.Println(
+			"El mensaje del commit no puede estar vacío.",
+		)
+
+		return
+	}
+
+	nombreRama, err := cabeza.LeerRamaActual(
+		".",
+	)
+
+	if err != nil {
+
+		fmt.Println(
+			"Error leyendo la rama actual:",
+			err,
+		)
+
+		return
+	}
+
 	entradas, err := indice.Leer(
 		".",
 	)
@@ -22,6 +46,15 @@ func EjecutarCommit(
 		fmt.Println(
 			"Error leyendo índice:",
 			err,
+		)
+
+		return
+	}
+
+	if len(entradas) == 0 {
+
+		fmt.Println(
+			"No hay archivos preparados para crear el commit.",
 		)
 
 		return
@@ -59,13 +92,13 @@ func EjecutarCommit(
 
 	hashPadre, err := referencias.LeerRama(
 		".",
-		"main",
+		nombreRama,
 	)
 
 	if err != nil {
 
 		fmt.Println(
-			"Error leyendo rama:",
+			"Error leyendo la rama:",
 			err,
 		)
 
@@ -107,7 +140,7 @@ func EjecutarCommit(
 
 	err = referencias.GuardarRama(
 		".",
-		"main",
+		nombreRama,
 		hashCommit,
 	)
 
@@ -126,4 +159,8 @@ func EjecutarCommit(
 		hashCommit,
 	)
 
+	fmt.Println(
+		"Rama:",
+		nombreRama,
+	)
 }
