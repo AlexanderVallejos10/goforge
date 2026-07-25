@@ -1,4 +1,4 @@
-package comandos
+package reset
 
 import (
 	"os"
@@ -9,11 +9,10 @@ import (
 	"github.com/AlexanderVallejos10/goforge/internal/commits"
 	"github.com/AlexanderVallejos10/goforge/internal/indice"
 	"github.com/AlexanderVallejos10/goforge/internal/objetos"
-	"github.com/AlexanderVallejos10/goforge/internal/ramas"
 	"github.com/AlexanderVallejos10/goforge/internal/referencias"
 )
 
-func prepararCheckout(
+func crearRepositorioPrueba(
 	t *testing.T,
 ) string {
 
@@ -48,10 +47,14 @@ func prepararCheckout(
 		t.Fatal(err)
 	}
 
+	contenidoOriginal := []byte(
+		"contenido original",
+	)
+
 	hashBlob, err := objetos.GuardarObjeto(
 		ruta,
 		objetos.TipoBlob,
-		[]byte("contenido"),
+		contenidoOriginal,
 	)
 
 	if err != nil {
@@ -61,9 +64,9 @@ func prepararCheckout(
 	err = os.WriteFile(
 		filepath.Join(
 			ruta,
-			"archivo.txt",
+			"prueba.txt",
 		),
-		[]byte("contenido"),
+		contenidoOriginal,
 		0644,
 	)
 
@@ -72,9 +75,8 @@ func prepararCheckout(
 	}
 
 	entradas := []indice.Entrada{
-
 		{
-			Archivo: "archivo.txt",
+			Archivo: "prueba.txt",
 			Hash:    hashBlob,
 		},
 	}
@@ -109,7 +111,7 @@ func prepararCheckout(
 	datosCommit, err := commits.CrearCommit(
 		hashTree,
 		"",
-		"commit prueba checkout",
+		"commit prueba reset hard",
 		"tester",
 	)
 
@@ -121,16 +123,6 @@ func prepararCheckout(
 		ruta,
 		objetos.TipoCommit,
 		datosCommit,
-	)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = ramas.Crear(
-		ruta,
-		"main",
-		hashCommit,
 	)
 
 	if err != nil {
@@ -159,115 +151,20 @@ func prepararCheckout(
 	return ruta
 }
 
-func TestCheckoutCreaRamaNueva(
+func TestRestaurarHardRestauraArchivo(
 	t *testing.T,
 ) {
 
-	_ = prepararCheckout(t)
-}
-
-func TestRamaNoExiste(
-	t *testing.T,
-) {
-
-	ruta := prepararCheckout(t)
-
-	lista, err := ramas.Listar(
-		ruta,
+	ruta := crearRepositorioPrueba(
+		t,
 	)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	for _, rama := range lista {
-
-		if rama == "fantasma" {
-
-			t.Fatal(
-				"la rama fantasma no debería existir",
-			)
-		}
-	}
-}
-
-func TestCheckoutMantieneHEAD(
-	t *testing.T,
-) {
-
-	ruta := prepararCheckout(t)
-
-	rama, err := cabeza.LeerRamaActual(
-		ruta,
-	)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if rama != "main" {
-
-		t.Fatalf(
-			"se esperaba main y se obtuvo %s",
-			rama,
-		)
-	}
-}
-
-func TestCheckoutCrearNuevaRamaCambiaHEAD(
-	t *testing.T,
-) {
-
-	ruta := prepararCheckout(t)
-
-	original, err := os.Getwd()
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer os.Chdir(original)
-
-	err = os.Chdir(ruta)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	EjecutarCheckout(
-		true,
-		"desarrollo",
-	)
-
-	rama, err := cabeza.LeerRamaActual(
-		ruta,
-	)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if rama != "desarrollo" {
-
-		t.Fatalf(
-			"se esperaba desarrollo y se obtuvo %s",
-			rama,
-		)
-	}
-}
-
-func TestCheckoutBloqueaCambiosLocales(
-	t *testing.T,
-) {
-
-	ruta := prepararCheckout(t)
 
 	err := os.WriteFile(
 		filepath.Join(
 			ruta,
-			"archivo.txt",
+			"prueba.txt",
 		),
-		[]byte("cambio local"),
+		[]byte("contenido modificado"),
 		0644,
 	)
 
@@ -275,26 +172,7 @@ func TestCheckoutBloqueaCambiosLocales(
 		t.Fatal(err)
 	}
 
-	original, err := os.Getwd()
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer os.Chdir(original)
-
-	err = os.Chdir(ruta)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	EjecutarCheckout(
-		false,
-		"main",
-	)
-
-	rama, err := cabeza.LeerRamaActual(
+	err = RestaurarHard(
 		ruta,
 	)
 
@@ -302,10 +180,22 @@ func TestCheckoutBloqueaCambiosLocales(
 		t.Fatal(err)
 	}
 
-	if rama != "main" {
+	contenido, err := os.ReadFile(
+		filepath.Join(
+			ruta,
+			"prueba.txt",
+		),
+	)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(contenido) != "contenido original" {
 
 		t.Fatalf(
-			"HEAD debería mantenerse en main",
+			"se esperaba contenido original y se obtuvo %s",
+			string(contenido),
 		)
 	}
 }

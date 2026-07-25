@@ -7,12 +7,35 @@ import (
 )
 
 func EjecutarReset(
-	archivo string,
+	argumento string,
 ) {
+
+	if argumento == "--hard" {
+
+		err := reset.RestaurarHard(
+			".",
+		)
+
+		if err != nil {
+
+			fmt.Println(
+				"Error ejecutando reset --hard:",
+				err,
+			)
+
+			return
+		}
+
+		fmt.Println(
+			"Repositorio restaurado al último commit.",
+		)
+
+		return
+	}
 
 	err := reset.RestaurarArchivo(
 		".",
-		archivo,
+		argumento,
 	)
 
 	if err != nil {
@@ -27,6 +50,6 @@ func EjecutarReset(
 
 	fmt.Println(
 		"Archivo restaurado:",
-		archivo,
+		argumento,
 	)
 }

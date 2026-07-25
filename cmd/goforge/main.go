@@ -219,21 +219,6 @@ func main() {
 			os.Args[2],
 		)
 
-	case "reset":
-
-		if len(os.Args) < 3 {
-
-			fmt.Println(
-				"Usa: goforge reset archivo",
-			)
-
-			return
-		}
-
-		comandos.EjecutarReset(
-			os.Args[2],
-		)
-
 	case "status":
 
 		comandos.EjecutarEstado()

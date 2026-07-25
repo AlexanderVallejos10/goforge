@@ -6,7 +6,6 @@ import (
 )
 
 func BuscarArchivos(
-	rutaRepositorio string,
 	ruta string,
 ) ([]string, error) {
 
@@ -24,10 +23,7 @@ func BuscarArchivos(
 				return err
 			}
 
-			if DebeIgnorar(
-				rutaRepositorio,
-				rutaActual,
-			) {
+			if DebeIgnorar(rutaActual) {
 
 				if info.IsDir() {
 					return filepath.SkipDir
