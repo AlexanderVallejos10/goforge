@@ -15,6 +15,12 @@ func LeerCommit(
 		rutaRepositorio,
 		hash,
 	)
+
+	if err != nil {
+
+		return objetos.Commit{}, err
+	}
+
 	_, contenido, err := objetos.LeerContenidoObjeto(
 		datos,
 	)
@@ -22,16 +28,19 @@ func LeerCommit(
 	if err != nil {
 
 		return objetos.Commit{}, err
-
 	}
 
 	var commit objetos.Commit
 
-	json.Unmarshal(
+	err = json.Unmarshal(
 		contenido,
 		&commit,
 	)
 
-	return commit, err
+	if err != nil {
 
+		return objetos.Commit{}, err
+	}
+
+	return commit, nil
 }

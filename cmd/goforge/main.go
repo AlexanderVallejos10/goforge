@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/AlexanderVallejos10/goforge/internal/comandos"
+	"github.com/AlexanderVallejos10/goforge/internal/reset"
 	"github.com/AlexanderVallejos10/goforge/internal/version"
 )
 
@@ -19,7 +20,7 @@ func main() {
 		)
 
 		fmt.Println(
-			"Comandos: init, hash, guardar, leer, add, status",
+			"Comandos: init, add, status, commit, log, show, branch, checkout, diff, restore, rm, reset, clean",
 		)
 
 		return
@@ -216,6 +217,44 @@ func main() {
 		}
 
 		comandos.EjecutarRm(
+			os.Args[2],
+		)
+
+	case "reset":
+
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge reset archivo | --hard",
+			)
+
+			return
+		}
+
+		if os.Args[2] == "--hard" {
+
+			err := reset.RestaurarHard(
+				".",
+			)
+
+			if err != nil {
+
+				fmt.Println(
+					"Error restaurando repositorio:",
+					err,
+				)
+
+				return
+			}
+
+			fmt.Println(
+				"Repositorio restaurado al último commit.",
+			)
+
+			return
+		}
+
+		comandos.EjecutarReset(
 			os.Args[2],
 		)
 
