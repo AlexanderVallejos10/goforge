@@ -25,12 +25,25 @@ func TestDebeIgnorarArchivoTmp(
 		t.Fatal(err)
 	}
 
-	if !DebeIgnorar(
+	// Creamos el archivo temporal dentro del repositorio
+
+	archivo := filepath.Join(
 		ruta,
-		filepath.Join(
-			ruta,
-			"prueba.tmp",
-		),
+		"prueba.tmp",
+	)
+
+	err = os.WriteFile(
+		archivo,
+		[]byte("temporal"),
+		0644,
+	)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !DebeIgnorar(
+		archivo,
 	) {
 
 		t.Fatal(
@@ -58,12 +71,23 @@ func TestNoIgnoraArchivoNormal(
 		t.Fatal(err)
 	}
 
-	if DebeIgnorar(
+	archivo := filepath.Join(
 		ruta,
-		filepath.Join(
-			ruta,
-			"archivo.txt",
-		),
+		"archivo.txt",
+	)
+
+	err = os.WriteFile(
+		archivo,
+		[]byte("normal"),
+		0644,
+	)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if DebeIgnorar(
+		archivo,
 	) {
 
 		t.Fatal(
