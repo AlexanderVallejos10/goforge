@@ -19,7 +19,7 @@ func main() {
 		)
 
 		fmt.Println(
-			"Usa: goforge init",
+			"Comandos: init, hash, guardar, leer, add, status",
 		)
 
 		return
@@ -35,6 +35,19 @@ func main() {
 
 	case "hash":
 
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge hash archivo",
+			)
+
+			return
+		}
+
+		comandos.EjecutarHash(
+			os.Args[2],
+		)
+
 	case "guardar":
 
 		if len(os.Args) < 3 {
@@ -47,19 +60,6 @@ func main() {
 		}
 
 		comandos.EjecutarGuardar(
-			os.Args[2],
-		)
-
-		if len(os.Args) < 3 {
-
-			fmt.Println(
-				"Usa: goforge hash archivo",
-			)
-
-			return
-		}
-
-		comandos.EjecutarHash(
 			os.Args[2],
 		)
 
@@ -83,7 +83,7 @@ func main() {
 		if len(os.Args) < 3 {
 
 			fmt.Println(
-				"Usa: goforge add archivo",
+				"Usa: goforge add archivo-o-carpeta",
 			)
 
 			return
@@ -93,13 +93,15 @@ func main() {
 			os.Args[2],
 		)
 
+	case "status":
+
+		comandos.EjecutarEstado()
+
 	default:
 
 		fmt.Println(
 			"Comando desconocido:",
 			comando,
 		)
-
 	}
-
 }
