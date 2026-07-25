@@ -1,8 +1,10 @@
 package ramas
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func RutaRama(
@@ -17,7 +19,6 @@ func RutaRama(
 		"heads",
 		nombre,
 	)
-
 }
 
 func Crear(
@@ -26,13 +27,34 @@ func Crear(
 	hashActual string,
 ) error {
 
+	nombre = strings.TrimSpace(nombre)
+
+	if nombre == "" {
+		return errors.New(
+			"el nombre de la rama no puede estar vacío",
+		)
+	}
+
+	ruta := RutaRama(
+		rutaRepositorio,
+		nombre,
+	)
+
+	_, err := os.Stat(ruta)
+
+	if err == nil {
+		return errors.New(
+			"la rama ya existe",
+		)
+	}
+
+	if !errors.Is(err, os.ErrNotExist) {
+		return err
+	}
+
 	return os.WriteFile(
-		RutaRama(
-			rutaRepositorio,
-			nombre,
-		),
+		ruta,
 		[]byte(hashActual),
 		0644,
 	)
-
 }
