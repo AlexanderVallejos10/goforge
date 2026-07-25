@@ -13,6 +13,26 @@ func EjecutarCheckout(
 	nombreRama string,
 ) {
 
+	ramaActual, err := cabeza.LeerRamaActual(
+		".",
+	)
+
+	if err != nil {
+		fmt.Println(
+			"Error leyendo la rama actual:",
+			err,
+		)
+		return
+	}
+
+	if nombreRama == ramaActual {
+		fmt.Println(
+			"Ya estás en la rama:",
+			nombreRama,
+		)
+		return
+	}
+
 	lista, err := ramas.Listar(
 		".",
 	)
@@ -39,6 +59,28 @@ func EjecutarCheckout(
 		fmt.Println(
 			"La rama no existe:",
 			nombreRama,
+		)
+		return
+	}
+
+	hayCambios, err := restauracion.TieneCambiosLocales(
+		".",
+	)
+
+	if err != nil {
+		fmt.Println(
+			"Error comprobando cambios locales:",
+			err,
+		)
+		return
+	}
+
+	if hayCambios {
+		fmt.Println(
+			"No se puede cambiar de rama.",
+		)
+		fmt.Println(
+			"Existen cambios locales sin confirmar.",
 		)
 		return
 	}

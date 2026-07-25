@@ -16,7 +16,17 @@ func RestaurarCommit(
 ) error {
 
 	if hashCommit == "" {
-		return errors.New("la rama no tiene commits")
+		return errors.New(
+			"la rama no tiene commits",
+		)
+	}
+
+	entradasAnteriores, err := indice.Leer(
+		rutaRepositorio,
+	)
+
+	if err != nil {
+		return err
 	}
 
 	commit, err := commits.LeerCommit(
@@ -37,7 +47,27 @@ func RestaurarCommit(
 		return err
 	}
 
-	entradasIndice := make(
+	archivosDestino := make(
+		map[string]bool,
+		len(tree.Entradas),
+	)
+
+	for _, entrada := range tree.Entradas {
+
+		archivosDestino[entrada.Nombre] = true
+	}
+
+	err = eliminarArchivosObsoletos(
+		rutaRepositorio,
+		entradasAnteriores,
+		archivosDestino,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	entradasNuevas := make(
 		[]indice.Entrada,
 		0,
 		len(tree.Entradas),
@@ -84,8 +114,8 @@ func RestaurarCommit(
 			return err
 		}
 
-		entradasIndice = append(
-			entradasIndice,
+		entradasNuevas = append(
+			entradasNuevas,
 			indice.Entrada{
 				Archivo: entrada.Nombre,
 				Hash:    entrada.Hash,
@@ -95,6 +125,78 @@ func RestaurarCommit(
 
 	return indice.Guardar(
 		rutaRepositorio,
-		entradasIndice,
+		entradasNuevas,
 	)
+}
+
+func eliminarArchivosObsoletos(
+	rutaRepositorio string,
+	entradasAnteriores []indice.Entrada,
+	archivosDestino map[string]bool,
+) error {
+
+	for _, entrada := range entradasAnteriores {
+
+		if archivosDestino[entrada.Archivo] {
+			continue
+		}
+
+		rutaArchivo := filepath.Join(
+			rutaRepositorio,
+			entrada.Archivo,
+		)
+
+		err := os.Remove(
+			rutaArchivo,
+		)
+
+		if err != nil &&
+			!errors.Is(err, os.ErrNotExist) {
+			return err
+		}
+
+		eliminarDirectoriosVacios(
+			rutaRepositorio,
+			filepath.Dir(rutaArchivo),
+		)
+	}
+
+	return nil
+}
+
+func eliminarDirectoriosVacios(
+	rutaRepositorio string,
+	rutaDirectorio string,
+) {
+
+	rutaRaiz, err := filepath.Abs(
+		rutaRepositorio,
+	)
+
+	if err != nil {
+		return
+	}
+
+	rutaActual, err := filepath.Abs(
+		rutaDirectorio,
+	)
+
+	if err != nil {
+		return
+	}
+
+	for rutaActual != rutaRaiz {
+
+		err = os.Remove(
+			rutaActual,
+		)
+
+		if err != nil {
+			return
+		}
+
+		rutaActual = filepath.Dir(
+			rutaActual,
+		)
+	}
 }
