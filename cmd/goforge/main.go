@@ -33,6 +33,51 @@ func main() {
 
 		comandos.EjecutarInit()
 
+	case "hash":
+
+	case "guardar":
+
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge guardar archivo",
+			)
+
+			return
+		}
+
+		comandos.EjecutarGuardar(
+			os.Args[2],
+		)
+
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge hash archivo",
+			)
+
+			return
+		}
+
+		comandos.EjecutarHash(
+			os.Args[2],
+		)
+
+	case "leer":
+
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge leer hash",
+			)
+
+			return
+		}
+
+		comandos.EjecutarLeer(
+			os.Args[2],
+		)
+
 	default:
 
 		fmt.Println(
