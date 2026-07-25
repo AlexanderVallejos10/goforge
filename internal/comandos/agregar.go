@@ -15,6 +15,7 @@ func EjecutarAgregar(
 ) {
 
 	listaArchivos, err := archivos.BuscarArchivos(
+		".",
 		ruta,
 	)
 
@@ -126,4 +127,5 @@ func EjecutarAgregar(
 		"Archivos agregados:",
 		len(entradasNuevas),
 	)
+
 }
