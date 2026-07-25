@@ -153,7 +153,27 @@ func main() {
 			return
 		}
 
+		if os.Args[2] == "-b" {
+
+			if len(os.Args) < 4 {
+
+				fmt.Println(
+					"Usa: goforge checkout -b rama",
+				)
+
+				return
+			}
+
+			comandos.EjecutarCheckout(
+				true,
+				os.Args[3],
+			)
+
+			return
+		}
+
 		comandos.EjecutarCheckout(
+			false,
 			os.Args[2],
 		)
 
@@ -181,6 +201,21 @@ func main() {
 		}
 
 		comandos.EjecutarRestore(
+			os.Args[2],
+		)
+
+	case "rm":
+
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge rm archivo",
+			)
+
+			return
+		}
+
+		comandos.EjecutarRm(
 			os.Args[2],
 		)
 
