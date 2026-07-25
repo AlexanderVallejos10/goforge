@@ -5,6 +5,8 @@ import (
 
 	"github.com/AlexanderVallejos10/goforge/internal/cabeza"
 	"github.com/AlexanderVallejos10/goforge/internal/ramas"
+	"github.com/AlexanderVallejos10/goforge/internal/referencias"
+	"github.com/AlexanderVallejos10/goforge/internal/restauracion"
 )
 
 func EjecutarCheckout(
@@ -16,12 +18,10 @@ func EjecutarCheckout(
 	)
 
 	if err != nil {
-
 		fmt.Println(
 			"Error leyendo ramas:",
 			err,
 		)
-
 		return
 	}
 
@@ -30,22 +30,43 @@ func EjecutarCheckout(
 	for _, rama := range lista {
 
 		if rama == nombreRama {
-
 			existe = true
-
+			break
 		}
-
 	}
 
 	if !existe {
-
 		fmt.Println(
 			"La rama no existe:",
 			nombreRama,
 		)
-
 		return
+	}
 
+	hashCommit, err := referencias.LeerRama(
+		".",
+		nombreRama,
+	)
+
+	if err != nil {
+		fmt.Println(
+			"Error leyendo la rama:",
+			err,
+		)
+		return
+	}
+
+	err = restauracion.RestaurarCommit(
+		".",
+		hashCommit,
+	)
+
+	if err != nil {
+		fmt.Println(
+			"Error restaurando archivos:",
+			err,
+		)
+		return
 	}
 
 	err = cabeza.Guardar(
@@ -54,12 +75,10 @@ func EjecutarCheckout(
 	)
 
 	if err != nil {
-
 		fmt.Println(
 			"Error cambiando HEAD:",
 			err,
 		)
-
 		return
 	}
 
@@ -67,5 +86,4 @@ func EjecutarCheckout(
 		"Cambiado a rama:",
 		nombreRama,
 	)
-
 }
