@@ -38,6 +38,7 @@ func Calcular(
 
 	archivosActuales, err := archivos.BuscarArchivos(
 		rutaRepositorio,
+		rutaRepositorio,
 	)
 
 	if err != nil {
@@ -130,6 +131,7 @@ func Calcular(
 	sort.Slice(
 		cambios,
 		func(i int, j int) bool {
+
 			return cambios[i].Archivo < cambios[j].Archivo
 		},
 	)
