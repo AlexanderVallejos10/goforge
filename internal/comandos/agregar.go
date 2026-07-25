@@ -45,9 +45,21 @@ func EjecutarAgregar(
 			continue
 		}
 
-		hash := objetos.CalcularHash(
+		hash, err := objetos.GuardarObjeto(
+			".",
+			objetos.TipoBlob,
 			contenido,
 		)
+
+		if err != nil {
+
+			fmt.Println(
+				"Error guardando objeto:",
+				err,
+			)
+
+			continue
+		}
 
 		entradas = append(
 			entradas,

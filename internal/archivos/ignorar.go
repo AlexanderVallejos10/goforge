@@ -1,30 +1,25 @@
-﻿package archivos
+package archivos
 
 import (
-"path/filepath"
+	"path/filepath"
 )
-
 
 func DebeIgnorar(
-ruta string,
+	ruta string,
 ) bool {
 
+	nombre := filepath.Base(
+		ruta,
+	)
 
-nombre := filepath.Base(
-ruta,
-)
+	if nombre == ".git" {
+		return true
+	}
 
+	if nombre == ".goforge" {
+		return true
+	}
 
-if nombre == ".git" {
-return true
-}
-
-
-if nombre == ".goforge" {
-return true
-}
-
-
-return false
+	return false
 
 }
