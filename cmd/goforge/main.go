@@ -157,6 +157,18 @@ func main() {
 			os.Args[2],
 		)
 
+	case "diff":
+
+		archivo := ""
+
+		if len(os.Args) >= 3 {
+			archivo = os.Args[2]
+		}
+
+		comandos.EjecutarDiff(
+			archivo,
+		)
+
 	case "status":
 
 		comandos.EjecutarEstado()
