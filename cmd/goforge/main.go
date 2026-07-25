@@ -219,6 +219,10 @@ func main() {
 			os.Args[2],
 		)
 
+	case "clean":
+
+		comandos.EjecutarClean()
+
 	case "status":
 
 		comandos.EjecutarEstado()
