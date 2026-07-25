@@ -78,6 +78,21 @@ func main() {
 			os.Args[2],
 		)
 
+	case "add":
+
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge add archivo",
+			)
+
+			return
+		}
+
+		comandos.EjecutarAgregar(
+			os.Args[2],
+		)
+
 	default:
 
 		fmt.Println(
