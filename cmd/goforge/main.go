@@ -169,6 +169,21 @@ func main() {
 			archivo,
 		)
 
+	case "restore":
+
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge restore archivo",
+			)
+
+			return
+		}
+
+		comandos.EjecutarRestore(
+			os.Args[2],
+		)
+
 	case "status":
 
 		comandos.EjecutarEstado()
