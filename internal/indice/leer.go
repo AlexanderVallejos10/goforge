@@ -1,6 +1,7 @@
 package indice
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -21,7 +22,16 @@ func Leer(
 	)
 
 	if err != nil {
+
+		if os.IsNotExist(err) {
+			return []Entrada{}, nil
+		}
+
 		return nil, err
+	}
+
+	if len(bytes.TrimSpace(datos)) == 0 {
+		return []Entrada{}, nil
 	}
 
 	var entradas []Entrada
@@ -31,6 +41,9 @@ func Leer(
 		&entradas,
 	)
 
-	return entradas, err
+	if err != nil {
+		return nil, err
+	}
 
+	return entradas, nil
 }
