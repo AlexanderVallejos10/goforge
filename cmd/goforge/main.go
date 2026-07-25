@@ -93,6 +93,40 @@ func main() {
 			os.Args[2],
 		)
 
+	case "commit":
+
+		if len(os.Args) < 4 || os.Args[2] != "-m" {
+
+			fmt.Println(
+				"Usa: goforge commit -m mensaje",
+			)
+
+			return
+		}
+
+		comandos.EjecutarCommit(
+			os.Args[3],
+		)
+
+	case "log":
+
+		comandos.EjecutarLog()
+
+	case "show":
+
+		if len(os.Args) < 3 {
+
+			fmt.Println(
+				"Usa: goforge show hash",
+			)
+
+			return
+		}
+
+		comandos.EjecutarShow(
+			os.Args[2],
+		)
+
 	case "status":
 
 		comandos.EjecutarEstado()

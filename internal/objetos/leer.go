@@ -1,25 +1,32 @@
 package objetos
 
-import (
-	"os"
-	"path/filepath"
-)
-
-func LeerObjeto(
+func Leer(
 	rutaRepositorio string,
 	hash string,
-) ([]byte, error) {
+) (ObjetoLeido, error) {
 
-	rutaObjeto := filepath.Join(
+	datos, err := LeerObjetoCompleto(
 		rutaRepositorio,
-		".goforge",
-		"objects",
-		hash[:2],
-		hash[2:],
+		hash,
 	)
 
-	return os.ReadFile(
-		rutaObjeto,
+	if err != nil {
+		return ObjetoLeido{}, err
+	}
+
+	tipo, contenido, err := LeerContenidoObjeto(
+		datos,
 	)
+
+	if err != nil {
+		return ObjetoLeido{}, err
+	}
+
+	return ObjetoLeido{
+
+		Tipo: tipo,
+
+		Contenido: contenido,
+	}, nil
 
 }

@@ -1,12 +1,13 @@
 package comandos
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/AlexanderVallejos10/goforge/internal/objetos"
 )
 
-func EjecutarLeer(
+func EjecutarShow(
 	hash string,
 ) {
 
@@ -18,11 +19,12 @@ func EjecutarLeer(
 	if err != nil {
 
 		fmt.Println(
-			"No se pudo leer objeto:",
+			"Error leyendo objeto:",
 			err,
 		)
 
 		return
+
 	}
 
 	fmt.Println(
@@ -31,6 +33,28 @@ func EjecutarLeer(
 	)
 
 	fmt.Println()
+
+	var formato json.RawMessage
+
+	err = json.Unmarshal(
+		objeto.Contenido,
+		&formato,
+	)
+
+	if err == nil {
+
+		datosBonitos, _ := json.MarshalIndent(
+			formato,
+			"",
+			"  ",
+		)
+
+		fmt.Println(
+			string(datosBonitos),
+		)
+
+		return
+	}
 
 	fmt.Println(
 		string(objeto.Contenido),

@@ -3,7 +3,9 @@ package objetos
 type TipoObjeto string
 
 const (
-	TipoBlob TipoObjeto = "blob"
+	TipoBlob   TipoObjeto = "blob"
+	TipoTree   TipoObjeto = "tree"
+	TipoCommit TipoObjeto = "commit"
 )
 
 type Objeto struct {
