@@ -1,0 +1,4 @@
+﻿.goforge/
+.git/
+bin/
+*.tmp
