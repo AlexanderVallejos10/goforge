@@ -3,6 +3,7 @@ package comandos
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/AlexanderVallejos10/goforge/internal/archivos"
 	"github.com/AlexanderVallejos10/goforge/internal/indice"
@@ -27,7 +28,7 @@ func EjecutarAgregar(
 		return
 	}
 
-	var entradas []indice.Entrada
+	var entradasNuevas []indice.Entrada
 
 	for _, archivo := range listaArchivos {
 
@@ -61,19 +62,54 @@ func EjecutarAgregar(
 			continue
 		}
 
-		entradas = append(
-			entradas,
-			indice.Entrada{
-				Archivo: archivo,
-				Hash:    hash,
-			},
+		rutaRelativa, err := filepath.Rel(
+			".",
+			archivo,
 		)
 
+		if err != nil {
+
+			fmt.Println(
+				"No se pudo calcular la ruta:",
+				archivo,
+			)
+
+			continue
+		}
+
+		entradasNuevas = append(
+			entradasNuevas,
+			indice.Entrada{
+				Archivo: filepath.Clean(
+					rutaRelativa,
+				),
+				Hash: hash,
+			},
+		)
 	}
+
+	entradasAnteriores, err := indice.Leer(
+		".",
+	)
+
+	if err != nil {
+
+		fmt.Println(
+			"Error leyendo índice:",
+			err,
+		)
+
+		return
+	}
+
+	entradasFinales := indice.Actualizar(
+		entradasAnteriores,
+		entradasNuevas,
+	)
 
 	err = indice.Guardar(
 		".",
-		entradas,
+		entradasFinales,
 	)
 
 	if err != nil {
@@ -88,7 +124,6 @@ func EjecutarAgregar(
 
 	fmt.Println(
 		"Archivos agregados:",
-		len(entradas),
+		len(entradasNuevas),
 	)
-
 }
